@@ -23,10 +23,8 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 30px 60px 30px 60px;
-  position: absolute;
+  position: sticky;
   top: 0;
-  right: 0;
-  left: 0;
 }
 
 .fear-header__logo {
@@ -45,5 +43,23 @@ export default {
 
 .fear-header__burger:hover {
   -webkit-text-stroke: 2px #8200ff;
+}
+
+@media (max-width: 767.98px) {
+  .fear-header__logo {
+    margin-left: 0;
+  }
+  .fear-header__logo > img {
+    width: 26px;
+  }
+
+  .fear-header__burger {
+    font-size: 35px;
+  }
+
+  .fear-header {
+    padding: 20px 30px;
+    z-index: 1;
+  }
 }
 </style>

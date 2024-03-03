@@ -1,48 +1,42 @@
 <template>
   <div id="app" class="app">
-    <FearHeader :button-close-name="buttonCloseName" @modal="visibleModal" />
-    <div class="app__content">
-      <vue-book-effects
-        v-show="!isModalVisible"
-        class="book-effects"
-        ref="bookEffects"
-        :ambient="0"
-        :gloss="0.1"
-        :nPolygons="15"
-        :pages="pages"
-        :startPage="currentBookOptions.page"
-        @flip-left-end="onFlipLeftEnd"
-        @flip-right-end="onFlipRightEnd"
-      />
-    </div>
-    <FearLinks />
-    <FearModal
-        v-show="isModalVisible"
-        :chapters="chapters"
-        @to="handleClickPushToPage"
-        @close="visibleModal"
+    <FearHeader button-close-name="РАЗДЕЛЫ" @modal="visibleModal" />
+    <vue-book-effects
+      class="fear-book"
+      ref="bookEffects"
+      :ambient="0"
+      :gloss="0.1"
+      :nPolygons="15"
+      :pages="pages"
+      :startPage="currentBookOptions.page"
+      :loadingImage="require('@/assets/loader.svg')"
     />
+    <FearLinks />
+    <FearModal v-if="isVisibleDrawer" :chapters="chapters" @to="handleClickPushToPage">
+      <template #title>
+        <FearHeader button-close-name="ЗАКРЫТЬ" @modal="visibleModal" />
+      </template>
+    </FearModal>
   </div>
 </template>
 
 <script>
 import VueBookEffects from "vue-book-effects";
-import FearModal from "@/components/FearModal.vue";
 import FearHeader from "@/components/FearHeader.vue";
 import FearLinks from "@/components/FearLinks.vue";
+import FearModal from "@/components/FearModal.vue";
 
 export default {
   name: "App",
-  components: { FearLinks, FearHeader, FearModal, VueBookEffects },
+  components: {FearModal, FearLinks, FearHeader, VueBookEffects },
   data() {
     return {
+      isVisibleDrawer: false,
       currentBookOptions: {
         page: 1,
         label: 'арты',
       },
-      isModalVisible: false,
       pages: [],
-      isNotebookView: true,
       chapters: [
         { label: 'обо мне', page: 2 },
         { label: 'графика', page: 4 },
@@ -57,11 +51,6 @@ export default {
         { label: 'полиграфия', page: 104 },
       ]
     };
-  },
-  computed: {
-    buttonCloseName() {
-      return this.isModalVisible ? 'ЗАКРЫТЬ' : 'РАЗДЕЛЫ';
-    }
   },
   mounted() {
     window.addEventListener('keydown', ev => {
@@ -193,7 +182,6 @@ export default {
     }, 1)
   },
   methods: {
-    // Метод вызова переключения страниц к ХХ разделам портфолио
     handleClickPushToPage({ page, label }) {
       this.currentBookOptions.page = page;
       this.currentBookOptions.label = label;
@@ -202,14 +190,8 @@ export default {
         this.visibleModal();
       })
     },
-    onFlipLeftEnd(pageNum) {
-      this.currentBookOptions.label = this.chapters.find(page => page.page === pageNum).label;
-    },
-    onFlipRightEnd(pageNum) {
-      this.currentBookOptions.label = this.chapters.find(page => page.page === pageNum).label;
-    },
     visibleModal() {
-      this.isModalVisible = !this.isModalVisible;
+      this.isVisibleDrawer = !this.isVisibleDrawer;
     },
   }
 };
@@ -233,7 +215,6 @@ body {
   background: url("@/assets/fear_background.png") no-repeat;
   background-size: cover;
   object-fit: contain;
-  height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -244,67 +225,20 @@ body {
 }
 
 
-.book-effects {
-  height: 75vh;
+.fear-book {
+  padding: 0 60px;
+  height: calc(100vh - 123px - 84px);
 }
 
-.book-effects .bounding-box {
+.fear-book .bounding-box {
   box-shadow: 0 0 20px #000;
 }
 
-@media (max-width: 575.98px) {
-
-}
-
 @media (max-width: 767.98px) {
-  .fear-header__logo {
-    margin-left: 0;
-  }
-  .fear-header__logo > img {
-    width: 26px;
-  }
-
-  .fear-header__burger {
-    font-size: 35px;
-  }
-
-  .fear-header {
-    padding: 20px 30px 0 30px;
-  }
-
-  .fear__links {
-    flex-direction: column;
-    padding: 0 30px 20px 30px;
-  }
-
-  .fear__link > a {
-    font-size: 16px;
-    white-space: nowrap;
-  }
-
-
-  .app__content {
-    padding: 0 30px 0 30px;
-    margin: 110px 0;
-  }
-
-  .app__modal-chapters {
-    flex-direction: column;
-    flex-wrap: nowrap;
-    gap: 20px;
-  }
-
-  .app__modal-chapter {
-    font-size: 35px;
-  }
-
-  .modal-body {
-    padding: 0 30px 0 30px;
-  }
-
-  .modal-backdrop {
-    top: 110px;
-    bottom: 118px;
+  .fear-book {
+    padding: 0 20px;
+    height: calc(100vh - 76px - 70px);
   }
 }
+
 </style>
